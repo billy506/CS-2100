@@ -1,2 +1,2 @@
-# CS2100
+# CS 2100
 Data Structure and Algorithms 1 (Prof. Floryan)

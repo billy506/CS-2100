@@ -12,9 +12,9 @@ public class HashTable<K,V> implements Map<K,V>{
 	/* The array of objects and related things */
 	private HashNode<K,V>[] table;
 	private HashNode<K,V> sentinel;
-    public int currentSize;
-    private int totalprimeSize;
-    private static int maxSize = 40;
+    	public int currentSize;
+    	private int totalprimeSize;
+    	private static int maxSize = 40;
 	
 	public HashTable() {
 		this(maxSize);
@@ -49,9 +49,8 @@ public class HashTable<K,V> implements Map<K,V>{
 	@Override
 	public void insert(K key, V value) {
 			int index = getHashIndex(key);
-			//int quadIndex = quadProbing(key);
 			/////////// Linear Probing ///////////
-			/*for(int i=0;i<table.length;i++) {
+			for(int i=0;i<table.length;i++) {
 				j = (index + i) % table.length; //IMPORTANT: This allows the linear probing process to go smoothly
 				if(table[j]==null||table[j].getKey()==null) {
 					table[j] = new HashNode<K,V>(key, value);
@@ -63,25 +62,22 @@ public class HashTable<K,V> implements Map<K,V>{
 					table[j] = new HashNode<K,V>(key, value);
 					break;
 				}
-			}*/
-			/////////// Double Hashing ///////////
-				int j; //IMPORTANT: This allows the quadratic probing process to go smoothly
-				for(int i=0;i<table.length;i++) {
-					j = (index + i*i) % table.length;
-					if(table[j]==null||table[j].getKey()==null) {
-						table[j] = new HashNode<K,V>(key, value);
-						currentSize++;
-						break;
-					}
-					else if(table[j].getKey().equals(key))
-					{
-						table[j] = new HashNode<K,V>(key, value);
-						break;
-					}
-				}
-	 
-
+			}
 			
+			/////////// Double Hashing ///////////
+			int j; //IMPORTANT: This allows the quadratic probing process to go smoothly
+			for(int i=0;i<table.length;i++) {
+				j = (index + i*i) % table.length;
+				if(table[j]==null||table[j].getKey()==null) {
+					table[j] = new HashNode<K,V>(key, value);
+					currentSize++;
+					break;
+				}
+				else if(table[j].getKey().equals(key)){
+					table[j] = new HashNode<K,V>(key, value);
+					break;
+				}
+			}
        
         if( ((double) currentSize) / table.length >= 0.7) {
         		this.resize();
@@ -96,9 +92,9 @@ public class HashTable<K,V> implements Map<K,V>{
     	currentSize = 0;
     	for (int i=0;i<temp.length;i++) {
             if(temp[i] != null&&temp[i]!=sentinel) {
-            	this.insert(temp[i].getKey(),temp[i].getValue());
-            }
-    	}
+            		this.insert(temp[i].getKey(),temp[i].getValue());
+            		}
+    		}
 	}
 	
 	

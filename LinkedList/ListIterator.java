@@ -28,25 +28,19 @@ public class ListIterator<T> {
 		return false;
 	}
 	
-	/**
-	 * Get the data at the current iterator position
-	 */
+	// Get the data at the current iterator position
 	public T value() {
 		/* TODO: Implement this method */
 		return curNode.getData();
 	}
 	
-	/**
-	 * These two methods move the cursor of the iterator
-	 * forward / backward one position
-	 */
+	//These two methods move the cursor of the iterator forward / backward one position
+	
 	public void moveForward() {
-		/* TODO: Implement this method */
 		curNode = curNode.next;
 	}
 	
 	public void moveBackward() {
-		/* TODO: Implement this method */
 		curNode = curNode.prev;
 	}
 }

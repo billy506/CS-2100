@@ -1,13 +1,11 @@
 package list;
 
-/**
- * 
- * A custom built linked list
- * T here is the type the list stores
- */
+/** A custom built linked list **/
+/** T here is the type the list stores **/
+
 public class LinkedList<T> implements List<T>{
 
-	/* Dummy head and tail */
+	/* Dummy head & tail */
 	private ListNode<T> head, tail;
 	private int size;
 	
@@ -24,25 +22,18 @@ public class LinkedList<T> implements List<T>{
 	}
 	
 	public int size() {
-		/* TODO: Implement this method */  
 		return this.size;
 	}
 	
-	/**
-	 * Clears out the entire list
-	 */
+	/*** Clears out the entire list ***/
 	public void clear() {
 		head.next = tail;
 		tail.prev = head;
 		this.size = 0; 
 	}
 	
-	/**
-	 * Inserts new data at the end of the list (i.e., just before the dummy tail node)
-	 * @param data
-	 */
+	/** Inserts new data at the end of the list (i.e., just before the dummy tail node) **/
 	public void insertAtTail(T data) {
-		/* TODO: Implement this method */
 		ListNode<T> newNode = new ListNode<T>(data);
 		newNode.next = tail;
 		newNode.prev = tail.prev;
@@ -51,10 +42,7 @@ public class LinkedList<T> implements List<T>{
 		this.size++;
 	}
 	
-	/**
-	 * Inserts data at the front of the list (i.e., just after the dummy head node
-	 * @param data
-	 */
+	/** Inserts data at the front of the list (i.e., just after the dummy head node **/
 	public void insertAtHead(T data) {
 		ListNode<T> newNode = new ListNode<T>(data);
 		newNode.prev = this.head;
@@ -63,11 +51,7 @@ public class LinkedList<T> implements List<T>{
 		this.size++;
 	}
 	
-	/**
-	 * Inserts node such that index becomes the position of the newly inserted data
-	 * @param data
-	 * @param index
-	 */
+	/*** Inserts node such that index becomes the position of the newly inserted data ***/
 	public void insertAt(int index, T data) {
 		if(index<=this.size) {
 			ListNode<T> newNode = new ListNode<T>(data);
@@ -87,9 +71,7 @@ public class LinkedList<T> implements List<T>{
 		}
 	}
 	
-	/**
-	 * Inserts data after the node pointed to by iterator
-	 */
+	/**Inserts data after the node pointed to by iterator**/
 	public void insert(ListIterator<T> it, T data) {
 		/* TODO: Implement this method */ 
 		ListNode<T> newNode = new ListNode<T>(data);
@@ -104,7 +86,6 @@ public class LinkedList<T> implements List<T>{
 	
 	
 	public T removeAtTail(){
-		/* TODO: Implement this method */
 		ListNode<T> oldNode = back().curNode;
 		ListNode<T> prevNode = oldNode.prev;
 		prevNode.next = tail;
@@ -114,7 +95,6 @@ public class LinkedList<T> implements List<T>{
 	}
 	
 	public T removeAtHead(){
-		/* TODO: Implement this method */
 		ListNode<T> oldNode = front().curNode;
 		if(head.next.next!=null){
 			ListNode<T> nextNode = head.next.next;
@@ -125,12 +105,8 @@ public class LinkedList<T> implements List<T>{
 		return oldNode.getData();
 	}
 	
-	/**
-	 * Remove based on Iterator position
-	 * Sets the iterator to the node AFTER the one removed
-	 */
+	/*** Remove based on Iterator position. Sets the iterator to the node AFTER the one removed. ***/
 	public T remove(ListIterator<T> it) {
-		/* TODO: Implement this method */
 		ListNode<T> oldNode = it.curNode;
 		it.moveForward();
 		oldNode.prev.next = oldNode.next;
@@ -139,12 +115,7 @@ public class LinkedList<T> implements List<T>{
 		return oldNode.getData();
 	}
 	
-	/**
-	 * Returns index of first occurrence of the data in the list, or -1 if not present
-	 * @param data
-	 * @return
-	 */
-	
+	/*** Returns index of first occurrence of the data in the list, or -1 if not present ***/
 	public int find(T data) {
 		ListNode<T> temp = head;
 		int count = 0;
@@ -159,27 +130,21 @@ public class LinkedList<T> implements List<T>{
 			return -1;
 	}
 	
-	/**
-	 * Returns the data at the given index, null if anything goes wrong (index out of bounds, empty list, etc.)
-	 * @param index
-	 * @return
-	 */
+	/**Returns the data at the given index, null if anything goes wrong (index out of bounds, empty list, etc.)**/
 	public T get(int index) {
 		if(index>this.size){
 			return null;
 			}
-		ListNode<T> temp = head;
-		for(int i=0;i<=index;i++) {
+			ListNode<T> temp = head;
+			for(int i=0;i<=index;i++) {
 			if(temp.next!=null) {
-					temp = temp.next;
-				}
+				temp = temp.next;
+			}
 		}	
 		return(temp.getData());
 	}
 	
-	/**
-	 * Returns the list as space separated values
-	 */
+	/*** Returns the list as space separated values ***/
 	public String toString() {
 		String toRet = "[";
 		
@@ -194,14 +159,12 @@ public class LinkedList<T> implements List<T>{
 	
 	/* Return iterators at front and end of list */
 	public ListIterator<T> front(){ 
-		/* TODO: Implement this method */
 		ListIterator<T> temp = new ListIterator<T>(head);
 		temp.moveForward();
 		return temp;
 	}
 
 	public ListIterator<T> back(){
-		/* TODO: Implement this method */ 
 		ListIterator<T> temp = new ListIterator<T>(tail);
 		temp.moveBackward();
 		return temp;

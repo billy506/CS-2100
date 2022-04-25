@@ -49,6 +49,8 @@ public class HashTable<K,V> implements Map<K,V>{
 	@Override
 	public void insert(K key, V value) {
 			int index = getHashIndex(key);
+			int j; //IMPORTANT: This allows the probing process to go smoothly
+
 			/////////// Linear Probing ///////////
 			for(int i=0;i<table.length;i++) {
 				j = (index + i) % table.length; //IMPORTANT: This allows the linear probing process to go smoothly
@@ -65,7 +67,6 @@ public class HashTable<K,V> implements Map<K,V>{
 			}
 			
 			/////////// Double Hashing ///////////
-			int j; //IMPORTANT: This allows the quadratic probing process to go smoothly
 			for(int i=0;i<table.length;i++) {
 				j = (index + i*i) % table.length;
 				if(table[j]==null||table[j].getKey()==null) {

@@ -1,114 +1,185 @@
 package hash;
-
-
 /**
  * Hash Table implementation. Uses linear probing to resolve collisions.
- * @author Mark Floryan
- *
+ * @author Prof. Mark Floryan
+ * @Help from Declan Stacy (fmw3cs)
  * @param <K>
  * @param <V>
  */
+
 public class HashTable<K,V> implements Map<K,V>{
 
 	/* The array of objects and related things */
 	private HashNode<K,V>[] table;
-	
-	/* YOU WILL LIKELY WANT MORE PRIVATE VARIABLES HERE */
-	static private int INITIAL_CAP = 10;
-	private int curSize;
-	private int maxSize;
-	private K[] keys;
-	private V[] values; 
-	
+	private HashNode<K,V> sentinel;
+    public int currentSize;
+    private int totalprimeSize;
+    private static int maxSize = 40;
 	
 	public HashTable() {
-		this(INITIAL_CAP);
+		this(maxSize);
 	}
 	
+	public String printIndex(int index) {
+		if(table[index]!=null)
+		{
+			return table[index].getKey().toString() +", " +  table[index].getValue();
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public HashTable(int initialCapacity) {
-		/* TODO: IMPLEMENT THIS METHOD */
-		curSize = 0;
-		maxSize = initialCapacity; 
-		keys = (K[]) new Object[maxSize];
-		values = (V[]) new Object[maxSize];
+		if (initialCapacity <= 0) {
+	         throw new IllegalArgumentException("Illegal Initial Capacity");
+		}
+		
+		K k = null; //plug into the sentinel 
+		V v = null;
+		
+		currentSize = 0;
+		totalprimeSize = getPrime();
+		maxSize = initialCapacity;
+		table = (HashNode <K,V>[]) new HashNode[maxSize];
+		for (int i = 0; i < maxSize; i++)
+            table[i] = null;
+		sentinel = new HashNode<K, V>(k,v);
 	}
-	
-	
-	  private int hash(K key) {
-	        int h = key.hashCode();
-	        return h & (maxSize-1);
-	    }
-	  
-	  private void resize(int capacity) {
-		  HashTable<K,V> temp = new HashTable<K,V> (capacity);
-		  for(int i = 0; i < maxSize; i++) {
-			  if(keys[i] != null) {
-				 temp.insert(keys[i], values[i]);
-			  }
-		  }
-		  keys = temp.keys;
-		  values = temp.values;
-		  maxSize = temp.maxSize;
-	  }
-	
-	
+   
 	@Override
 	public void insert(K key, V value) {
-		if (value == null) {
-			remove(key);
-			return;
-		}
-		
-		if(curSize >= maxSize/2) resize(2*maxSize);
-		
-		int i;
-		for(i = hash(key); keys[i] != null; i =(i+1) % maxSize) {
-			if(keys[i].equals(key)) {
-				values[i] = value;
-				return;
+			int index = getHashIndex(key);
+			//int quadIndex = quadProbing(key);
+			/////////// Linear Probing ///////////
+			/*for(int i=0;i<table.length;i++) {
+				j = (index + i) % table.length; //IMPORTANT: This allows the linear probing process to go smoothly
+				if(table[j]==null||table[j].getKey()==null) {
+					table[j] = new HashNode<K,V>(key, value);
+					currentSize++;
+					break;
+				}
+				else if(table[j].getKey().equals(key))
+				{
+					table[j] = new HashNode<K,V>(key, value);
+					break;
+				}
+			}*/
+			/////////// Double Hashing ///////////
+				int j; //IMPORTANT: This allows the quadratic probing process to go smoothly
+				for(int i=0;i<table.length;i++) {
+					j = (index + i*i) % table.length;
+					if(table[j]==null||table[j].getKey()==null) {
+						table[j] = new HashNode<K,V>(key, value);
+						currentSize++;
+						break;
+					}
+					else if(table[j].getKey().equals(key))
+					{
+						table[j] = new HashNode<K,V>(key, value);
+						break;
+					}
+				}
+	 
+
+			
+       
+        if( ((double) currentSize) / table.length >= 0.7) {
+        		this.resize();
+              }
+	}
+
+	@SuppressWarnings("unchecked")
+	public void resize() {
+		HashNode<K, V>[] temp = table.clone();
+    	table = (HashNode <K,V>[]) new HashNode[table.length * 2];
+    	maxSize = table.length;
+    	currentSize = 0;
+    	for (int i=0;i<temp.length;i++) {
+            if(temp[i] != null&&temp[i]!=sentinel) {
+            	this.insert(temp[i].getKey(),temp[i].getValue());
+            }
+    	}
+	}
+	
+	
+	public V retrieve(K key) {
+		int index = getHashIndex(key);
+		int j;
+		for(int i=0;i<table.length;i++) {
+			j = (index + i) % table.length; //IMPORTANT: This allows the linear probing process to go smoothly
+			if(table[j]!=null&&key.equals(table[j].getKey())) {
+				return table[j].getValue();
+			}
+			if(table[j]==null)
+			{
+				break;
 			}
 		}
-		keys[i] = key;
-		values[i] = value;
-		curSize ++;	
+		return null;
 	}
 
-	@Override
-	public V retrieve(K key) {
-		for(int i = hash(key); keys[i] != null; i = (i+1) % maxSize) 
-			if(keys[i].equals(key)) return values[i];
-		return null; 
-	}
-
-	@Override
+	
 	public boolean contains(K key) {
-		return retrieve(key) != null;
+		int index = getHashIndex(key);
+		int j;
+		for(int i=0;i<table.length;i++) {
+			j = (index + i*i) % table.length; //IMPORTANT: This allows the linear probing process to go smoothly
+			if(table[j]!=null&&key.equals(table[j].getKey())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	@Override
+	
 	public void remove(K key) {
-		if(!contains(key)) return;
-		
-		int i = hash(key); 
-		while(!key.equals(keys[i])) {
-			i = (i+1) % maxSize;
+		int index = getHashIndex(key);
+		int j;
+		for(int i=0;i<table.length;i++) {
+			j = (index + i) % table.length; //IMPORTANT: This allows the linear probing process to go smoothly
+			if(table[j]!=null&&key.equals(table[j].getKey())) {
+				table[j] = sentinel;
+			}
 		}
-		
-		keys[i] = null;
-		values[i] = null;
-		
-		i = (i + 1) % maxSize;
-		while(keys[i] != null) {
-			K keyToRehash = keys[i];
-			V valuestoRehash = values[i];
-			keys[i] = null;
-			values[i] = null;
-			curSize --;
-			insert(keyToRehash, valuestoRehash);
-			i = (i+1) % maxSize;
+	}
+	
+	private int getHashIndex(K key) {
+		return Math.abs(key.hashCode()) % table.length;
+	}
+	
+	
+	private int quadProbing(K key)
+    {
+        int hashVal = Math.abs(key.hashCode());
+        hashVal %= table.length;
+        if (hashVal < 0)
+        	hashVal += maxSize;
+        return totalprimeSize - hashVal % totalprimeSize;
+    }
+	
+	public int getPrime()
+    {
+		for (int i=maxSize-1;i>=1;i--) {
+            int count = 0;
+            for (int j = 2; j * j <= i; j++) {
+                if (i % j == 0) {
+                	count++;
+                }
+                if (count == 0) {
+                	return i;
+                }
+            }
 		}
-		curSize --;
-		
-		if(curSize > 0 && curSize <= maxSize/8) resize(maxSize/2);
-	}	
+        // Returning a prime number
+            return 3;
+    }
+	
+	 public void printHashTable()
+	    {
+	        // Display message
+	        System.out.println("Hash Table");
+	        for (int i = 0; i < maxSize; i++)
+	        	System.out.println(table[i].getKey() + " "+ table[i].getValue());
+	    }
+	
 }

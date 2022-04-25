@@ -2,7 +2,7 @@ package hash;
 /**
  * Hash Table implementation. Uses linear probing to resolve collisions.
  * @author Prof. Mark Floryan
- * @Help from Declan Stacy (fmw3cs)
+ * @help received from Declan Stacy (fmw3cs)
  * @param <K>
  * @param <V>
  */

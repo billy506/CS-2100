@@ -1,5 +1,5 @@
 package hash;
-/**
+/*
  * Hash Table implementation. Uses linear probing to resolve collisions.
  * @author Prof. Mark Floryan
  * @help received from Declan Stacy (fmw3cs)

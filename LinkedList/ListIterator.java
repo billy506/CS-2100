@@ -8,10 +8,8 @@ public class ListIterator<T> {
 		this.curNode = curNode;
 	}
 	
-	/**
-	 * These two methods tell us if the iterator has run off
-	 * the list on either side
-	 */
+	//These two methods tell us if the iterator has run off the list on either side
+
 	public boolean isPastEnd() {
 		if(curNode.next==null)
 		{
